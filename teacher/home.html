@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
+  <title>Teacher Dashboard - KKDMS</title>
   <link rel="stylesheet" href="../style.css">
   <style>
-    /* === Additional Admin Page Styles === */
+    /* === Additional Teacher Page Styles === */
     .login-box {
       background: rgba(255, 255, 255, 0.9);
       padding: 25px 20px;
@@ -53,7 +53,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    .admin-info {
+    .teacher-info {
       text-align: center;
       color: #5a2e24;
       font-weight: bold;
@@ -92,35 +92,47 @@
       border-radius: 10px;
       background: #fff;
     }
-/* Loader Spinner */
-.loader {
-  border: 5px solid #f3f3f3; /* Light gray */
-  border-top: 5px solid #4CAF50; /* Green */
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
-}
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+    /* Loader Spinner */
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #4CAF50;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
 
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>ADMIN DASHBOARD</h1>
-    <p><em>Manage the portal efficiently</em></p>
+    <h1>KKDMS TEACHER DASHBOARD</h1>
+    <p><em>Manage your resources and notices</em></p>
   </div>
 
   <!-- Login Box -->
- <div class="login-box" id="loginBox">
-  <h2>Admin Login</h2>
-  <input type="text" id="adminId" placeholder="Enter Admin ID" />
-  <input type="password" id="adminPass" placeholder="Enter Password" />
+<div class="login-box" id="loginBox">
+  <h2>Teacher Login</h2>
+  <input type="text" id="teacherId" placeholder="Enter Teacher ID" />
+  
+  <div style="position:relative;">
+    <input type="password" id="teacherPass" placeholder="Enter Password" />
+    <span style="position:absolute; right:10px; top:12px; cursor:pointer;" onclick="togglePassword()">
+      👁️
+    </span>
+  </div>
+
+  <div style="margin:10px 0; text-align:left; padding-left:10%;">
+    <input type="checkbox" id="rememberMe" />
+    <label for="rememberMe">Remember Me</label>
+  </div>
+
   <button onclick="login()">Login</button>
   <p id="error" style="color:red; font-weight:bold;"></p>
 
@@ -133,12 +145,13 @@
 
   <!-- Dashboard -->
   <div class="dashboard" id="dashboard">
-    <div class="admin-info" id="adminInfo"></div>
+    <div class="teacher-info" id="teacherInfo"></div>
 
     <nav>
-      <button onclick="loadPage('home')">Home</button>
-      <button onclick="loadPage('setting')">Setting</button>
-      <button onclick="loadPage('links')">Links</button>
+      <button onclick="loadPage('download')">Download</button>
+      <button onclick="loadPage('upload')">Upload</button>
+      <button onclick="loadPage('view')">View</button>
+      <button onclick="loadPage('notice')">Notice</button>
       <button onclick="logout()">Logout</button>
     </nav>
 
@@ -146,58 +159,57 @@
   </div>
 
   <script>
-    const apiURL = "https://script.google.com/macros/s/AKfycbxOcbtKjc05QD20Ewb8niOzbBzUUIY4zkSZ2qqWJUZRR05hBQevy0vTcCWHwmVAdYoB/exec?id=Mita";
+    const apiURL = "https://script.google.com/macros/s/AKfycbw_QrsFKW72Liq1EsXu1thJuVnBlHRIIBHMVBl8Y__nQY7XC3qdiIP6k4TSxdcSntw7GA/exec?id=Abdul";
 
-async function login() {
-  const id = document.getElementById("adminId").value.trim();
-  const pass = document.getElementById("adminPass").value.trim();
-  const error = document.getElementById("error");
-  const spinner = document.getElementById("spinner");
+    async function login() {
+      const id = document.getElementById("teacherId").value.trim();
+      const pass = document.getElementById("teacherPass").value.trim();
+      const error = document.getElementById("error");
+      const spinner = document.getElementById("spinner");
+      error.textContent = "";
 
-  error.textContent = "";
+      if(!id || !pass) {
+        error.textContent = "Please enter Teacher ID and Password";
+        return;
+      }
 
-  if(!id || !pass) {
-    error.textContent = "Please enter Admin ID and Password";
-    return;
-  }
+      spinner.style.display = "block";
 
-  // Show spinner
-  spinner.style.display = "block";
+      try {
+        const res = await fetch(apiURL);
+        const data = await res.json();
+        spinner.style.display = "none";
 
-  try {
-    const res = await fetch(apiURL);
-    const data = await res.json();
+        if(data.Id === id && data.Password === pass) {
+          document.getElementById('loginBox').style.display = "none";
+          document.getElementById('dashboard').style.display = "block";
+          document.getElementById('teacherInfo').textContent = `${data.Name} | ID: ${data.Id}`;
 
-    // Hide spinner
-    spinner.style.display = "none";
-
-    if(data.Id === id && data.Password === pass) {
-      document.getElementById('loginBox').style.display = "none";
-      document.getElementById('dashboard').style.display = "block";
-      document.getElementById('adminInfo').textContent = `${data.Name} | ID: ${data.Id}`;
-      loadPage('home'); // load welcome page
-    } else {
-      error.textContent = "❌ Invalid Admin ID or Password!";
+          loadPage('notice'); // default page in iframe
+        } else {
+          error.textContent = "❌ Invalid Teacher ID or Password!";
+        }
+      } catch(err) {
+        spinner.style.display = "none";
+        console.error(err);
+        error.textContent = "⚠️ Network or Server Error!";
+      }
     }
-  } catch(err) {
-    spinner.style.display = "none";
-    console.error(err);
-    error.textContent = "⚠️ Network or Server Error!";
-  }
-}
-
 
     function loadPage(page) {
       const frame = document.getElementById('mainFrame');
       switch(page) {
-        case 'home':
-          frame.src = "homePage.html";
+        case 'download':
+          frame.src = "download.html";
           break;
-        case 'setting':
-          frame.src = "setting.html";
+        case 'upload':
+          frame.src = "upload.html";
           break;
-        case 'links':
-          frame.src = "links.html";
+        case 'view':
+          frame.src = "view.html";
+          break;
+        case 'notice':
+          frame.src = "notice.html";
           break;
       }
     }
@@ -205,11 +217,44 @@ async function login() {
     function logout() {
       document.getElementById('dashboard').style.display = "none";
       document.getElementById('loginBox').style.display = "block";
-      document.getElementById('adminId').value = "";
-      document.getElementById('adminPass').value = "";
+      document.getElementById('teacherId').value = "";
+      document.getElementById('teacherPass').value = "";
       document.getElementById('mainFrame').src = "";
       document.getElementById('error').textContent = "";
     }
+// Toggle show/hide password
+function togglePassword() {
+  const passInput = document.getElementById("teacherPass");
+  if(passInput.type === "password") {
+    passInput.type = "text";
+  } else {
+    passInput.type = "password";
+  }
+}
+
+// Save login info if Remember Me checked
+function saveCredentials(id, pass) {
+  const remember = document.getElementById("rememberMe").checked;
+  if(remember) {
+    localStorage.setItem("teacherId", id);
+    localStorage.setItem("teacherPass", pass);
+  } else {
+    localStorage.removeItem("teacherId");
+    localStorage.removeItem("teacherPass");
+  }
+}
+
+// Preload saved credentials
+window.onload = function() {
+  const savedId = localStorage.getItem("teacherId");
+  const savedPass = localStorage.getItem("teacherPass");
+  if(savedId && savedPass) {
+    document.getElementById("teacherId").value = savedId;
+    document.getElementById("teacherPass").value = savedPass;
+    document.getElementById("rememberMe").checked = true;
+  }
+};
+
   </script>
 </body>
 </html>

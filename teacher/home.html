@@ -6,14 +6,14 @@
   <title>Teacher Dashboard - KKDMS</title>
   <link rel="stylesheet" href="../style.css">
   <style>
-    /* === Additional Teacher Page Styles === */
+    /* === Teacher Page Styles === */
     .login-box {
       background: rgba(255, 255, 255, 0.9);
       padding: 25px 20px;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       text-align: center;
-      max-width: 350px;
+      max-width: 360px;
       width: 90%;
       margin-top: 80px;
     }
@@ -36,12 +36,30 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 16px;
+      margin-top: 10px;
     }
 
     .login-box button:hover {
       background-color: #45a049;
     }
 
+    /* Loader Spinner */
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #4CAF50;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Dashboard */
     .dashboard {
       display: none;
       width: 100%;
@@ -93,20 +111,17 @@
       background: #fff;
     }
 
-    /* Loader Spinner */
-    .loader {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #4CAF50;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
+    /* Remember Me Table */
+    .remember-table {
+      width: 90%;
+      margin: 10px auto;
+      text-align: left;
+      border-collapse: collapse;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .remember-table td {
+      padding: 4px 8px;
+      vertical-align: middle;
     }
   </style>
 </head>
@@ -117,31 +132,32 @@
   </div>
 
   <!-- Login Box -->
-<div class="login-box" id="loginBox">
-  <h2>Teacher Login</h2>
-  <input type="text" id="teacherId" placeholder="Enter Teacher ID" />
-  
-  <div style="position:relative;">
-    <input type="password" id="teacherPass" placeholder="Enter Password" />
-    <span style="position:absolute; right:10px; top:12px; cursor:pointer;" onclick="togglePassword()">
-      👁️
-    </span>
+  <div class="login-box" id="loginBox">
+    <h2>Teacher Login</h2>
+    
+    <input type="text" id="teacherId" placeholder="Enter Teacher ID" />
+    
+    <div style="position:relative; width:90%; margin:10px auto;">
+      <input type="password" id="teacherPass" placeholder="Enter Password" style="width:100%;" />
+      <span style="position:absolute; right:10px; top:50%; transform: translateY(-50%); cursor:pointer;" onclick="togglePassword()">👁️</span>
+    </div>
+
+    <!-- Remember Me aligned using table -->
+    <table class="remember-table">
+      <tr>
+        <td><input type="checkbox" id="rememberMe" /></td>
+        <td><label for="rememberMe">Remember Me</label></td>
+      </tr>
+    </table>
+
+    <button onclick="login()">Login</button>
+    <p id="error" style="color:red; font-weight:bold;"></p>
+
+    <!-- Loader Spinner -->
+    <div class="spinner" id="spinner" style="display:none; margin-top:15px;">
+      <div class="loader"></div>
+    </div>
   </div>
-
-  <div style="margin:10px 0; text-align:left; padding-left:10%;">
-    <input type="checkbox" id="rememberMe" />
-    <label for="rememberMe">Remember Me</label>
-  </div>
-
-  <button onclick="login()">Login</button>
-  <p id="error" style="color:red; font-weight:bold;"></p>
-
-  <!-- Loader Spinner -->
-  <div class="spinner" id="spinner" style="display:none; margin-top:15px;">
-    <div class="loader"></div>
-  </div>
-</div>
-
 
   <!-- Dashboard -->
   <div class="dashboard" id="dashboard">
@@ -161,6 +177,36 @@
   <script>
     const apiURL = "https://script.google.com/macros/s/AKfycbw_QrsFKW72Liq1EsXu1thJuVnBlHRIIBHMVBl8Y__nQY7XC3qdiIP6k4TSxdcSntw7GA/exec?id=Abdul";
 
+    // Load saved credentials
+    window.onload = function() {
+      const savedId = localStorage.getItem("teacherId");
+      const savedPass = localStorage.getItem("teacherPass");
+      if(savedId && savedPass) {
+        document.getElementById("teacherId").value = savedId;
+        document.getElementById("teacherPass").value = savedPass;
+        document.getElementById("rememberMe").checked = true;
+      }
+    };
+
+    // Toggle show/hide password
+    function togglePassword() {
+      const passInput = document.getElementById("teacherPass");
+      passInput.type = passInput.type === "password" ? "text" : "password";
+    }
+
+    // Save credentials if Remember Me checked
+    function saveCredentials(id, pass) {
+      const remember = document.getElementById("rememberMe").checked;
+      if(remember) {
+        localStorage.setItem("teacherId", id);
+        localStorage.setItem("teacherPass", pass);
+      } else {
+        localStorage.removeItem("teacherId");
+        localStorage.removeItem("teacherPass");
+      }
+    }
+
+    // Login function
     async function login() {
       const id = document.getElementById("teacherId").value.trim();
       const pass = document.getElementById("teacherPass").value.trim();
@@ -181,11 +227,13 @@
         spinner.style.display = "none";
 
         if(data.Id === id && data.Password === pass) {
+          saveCredentials(id, pass); // Save credentials if Remember Me checked
+
           document.getElementById('loginBox').style.display = "none";
           document.getElementById('dashboard').style.display = "block";
           document.getElementById('teacherInfo').textContent = `${data.Name} | ID: ${data.Id}`;
 
-          loadPage('notice'); // default page in iframe
+          loadPage('notice'); // default iframe page
         } else {
           error.textContent = "❌ Invalid Teacher ID or Password!";
         }
@@ -199,18 +247,10 @@
     function loadPage(page) {
       const frame = document.getElementById('mainFrame');
       switch(page) {
-        case 'download':
-          frame.src = "download.html";
-          break;
-        case 'upload':
-          frame.src = "upload.html";
-          break;
-        case 'view':
-          frame.src = "view.html";
-          break;
-        case 'notice':
-          frame.src = "notice.html";
-          break;
+        case 'download': frame.src = "download.html"; break;
+        case 'upload': frame.src = "upload.html"; break;
+        case 'view': frame.src = "view.html"; break;
+        case 'notice': frame.src = "notice.html"; break;
       }
     }
 
@@ -222,39 +262,6 @@
       document.getElementById('mainFrame').src = "";
       document.getElementById('error').textContent = "";
     }
-// Toggle show/hide password
-function togglePassword() {
-  const passInput = document.getElementById("teacherPass");
-  if(passInput.type === "password") {
-    passInput.type = "text";
-  } else {
-    passInput.type = "password";
-  }
-}
-
-// Save login info if Remember Me checked
-function saveCredentials(id, pass) {
-  const remember = document.getElementById("rememberMe").checked;
-  if(remember) {
-    localStorage.setItem("teacherId", id);
-    localStorage.setItem("teacherPass", pass);
-  } else {
-    localStorage.removeItem("teacherId");
-    localStorage.removeItem("teacherPass");
-  }
-}
-
-// Preload saved credentials
-window.onload = function() {
-  const savedId = localStorage.getItem("teacherId");
-  const savedPass = localStorage.getItem("teacherPass");
-  if(savedId && savedPass) {
-    document.getElementById("teacherId").value = savedId;
-    document.getElementById("teacherPass").value = savedPass;
-    document.getElementById("rememberMe").checked = true;
-  }
-};
-
   </script>
 </body>
 </html>

@@ -1,0 +1,7 @@
+login sheet = https://docs.google.com/spreadsheets/d/1IbP_0ih8-yErXL41-BaEGRf0vnxa2TJtgIFK1QDHWtk/edit?gid=648656237#gid=648656237
+student login api = https://script.google.com/macros/s/AKfycbyV5TG-O0EW8yE31Nwzu8pZI2trcGGSpXOwOHXo1cYHKs8bpEVMBte_Yp6hKFjaa1AK/exec?admissionNo=
+student login api script = https://script.google.com/home/projects/1Efo-ENfr0RLf6td-5N5GuF0tKHedmE33rPHLzKIJTMeuRmmI49TdehNv/edit
+teacher login api = https://script.google.com/macros/s/AKfycbw_QrsFKW72Liq1EsXu1thJuVnBlHRIIBHMVBl8Y__nQY7XC3qdiIP6k4TSxdcSntw7GA/exec?id=
+teacher login api = https://script.google.com/home/projects/1P45xUVVegBZwIoWnrZ_n3iVUPodEl-gbHAagyzEbxbfNQSRSiMxiMptI/edit
+admin login api = https://script.google.com/macros/s/AKfycbxOcbtKjc05QD20Ewb8niOzbBzUUIY4zkSZ2qqWJUZRR05hBQevy0vTcCWHwmVAdYoB/exec?id=
+admin login api script = https://script.google.com/home/projects/1FG_PfZG9LrADQRzir3SBeKoG8lc5faCzmpVQ4SDlxyqDf3YuzdnRzr-f/edit

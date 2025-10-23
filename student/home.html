@@ -1,53 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Work in Progress</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal - KKDMS</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      color: #333;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Times New Roman', serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    /* Login Section */
+    #loginSection {
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      max-width: 450px;
+      width: 100%;
+    }
+
+    .login-header {
       text-align: center;
+      margin-bottom: 30px;
     }
 
-    h1 {
-      font-size: 36px;
-      color: #d9534f;
+    .login-header h1 {
+      color: #5a2e24;
+      font-size: 28px;
+      margin-bottom: 10px;
     }
 
-    p {
-      font-size: 18px;
+    .login-header p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Times New Roman', serif;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .error-message {
+      color: #d32f2f;
+      font-size: 14px;
       margin-top: 10px;
+      text-align: center;
+      display: none;
     }
 
-    .loader {
-      margin-top: 30px;
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid #d9534f;
+    /* Home Section */
+    #homeSection {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .header-bar {
+      background: white;
+      padding: 15px 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .user-info h2 {
+      color: #5a2e24;
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .user-info p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .logout-btn {
+      padding: 10px 25px;
+      background: #d32f2f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #b71c1c;
+    }
+
+    .nav-container {
+      background: white;
+      padding: 15px 20px;
+      margin: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .nav-btn {
+      padding: 12px 25px;
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .content-frame {
+      margin: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      height: calc(100vh - 300px);
+    }
+
+    .content-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
       border-radius: 50%;
-      width: 60px;
-      height: 60px;
+      width: 40px;
+      height: 40px;
       animation: spin 1s linear infinite;
+      margin: 20px auto;
+      display: none;
     }
 
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    @media (max-width: 768px) {
+      .header-bar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .nav-buttons {
+        flex-direction: column;
+      }
+
+      .nav-btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>🚧 Work in Progress 🚧</h1>
-  <p>We’re working hard to bring you something awesome. Please check back soon!</p>
-  <div class="loader"></div>
+  <!-- Login Section -->
+  <div id="loginSection">
+    <div class="login-container">
+      <div class="login-header">
+        <h1>Student Login</h1>
+        <p>Kamal Kumari Devi Model School</p>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="class">Select Class</label>
+          <select id="class" required>
+            <option value="">-- Select Class --</option>
+            <option value="Balvatika-I">Balvatika-I</option>
+            <option value="Balvatika-II">Balvatika-II</option>
+            <option value="Balvatika-III">Balvatika-III</option>
+            <option value="I">I</option>
+            <option value="II">II</option>
+            <option value="III">III</option>
+            <option value="IV">IV</option>
+            <option value="V">V</option>
+            <option value="VI">VI</option>
+            <option value="VII">VII</option>
+            <option value="VIII">VIII</option>
+            <option value="IX">IX</option>
+            <option value="X">X</option>
+            <option value="XI - SC">XI - SC</option>
+            <option value="XII - SC">XII - SC</option>
+            <option value="XI - Com">XI - Com</option>
+            <option value="XII - Com">XII - Com</option>
+            <option value="XI - Arts">XI - Arts</option>
+            <option value="XII - Arts">XII - Arts</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="admissionNo">Admission Number</label>
+          <input type="text" id="admissionNo" required>
+        </div>
+        <div class="form-group">
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" required>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+        <div class="spinner" id="spinner"></div>
+        <div class="error-message" id="errorMessage"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Home Section -->
+  <div id="homeSection">
+    <div class="header-bar">
+      <div class="user-info">
+        <h2 id="userName">Welcome, Student</h2>
+        <p id="userDetails">Admission No: ---</p>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="nav-container">
+      <div class="nav-buttons">
+        <button class="nav-btn active" onclick="loadPage('dashboard')">Dashboard</button>
+        <button class="nav-btn" onclick="loadPage('attendance')">Attendance</button>
+        <button class="nav-btn" onclick="loadPage('assignments')">Assignments</button>
+        <button class="nav-btn" onclick="loadPage('results')">Results</button>
+        <button class="nav-btn" onclick="loadPage('profile')">Profile</button>
+      </div>
+    </div>
+
+    <div class="content-frame">
+      <iframe id="contentFrame" src="about:blank"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // REPLACE THIS WITH YOUR DEPLOYED WEB APP URL
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyoY0e1ykxxKyCa9QThfp-mQT9pCm3VXz9xXjau5v9InycqhzK1Z-mnZEZSNKZ2L2Wi/exec';
+
+    let userData = null;
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const classValue = document.getElementById('class').value;
+      const admissionNo = document.getElementById('admissionNo').value;
+      const dob = document.getElementById('dob').value;
+      
+      const spinner = document.getElementById('spinner');
+      const errorMessage = document.getElementById('errorMessage');
+      const submitBtn = e.target.querySelector('.login-btn');
+      
+      spinner.style.display = 'block';
+      errorMessage.style.display = 'none';
+      submitBtn.disabled = true;
+      
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'login',
+            userType: 'student',
+            classValue: classValue,
+            admissionNo: admissionNo,
+            dob: dob
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          userData = result.data;
+          showHomePage();
+        } else {
+          errorMessage.textContent = result.message;
+          errorMessage.style.display = 'block';
+        }
+      } catch (error) {
+        errorMessage.textContent = 'Connection error. Please check your internet and try again.';
+        errorMessage.style.display = 'block';
+      } finally {
+        spinner.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    });
+
+    function showHomePage() {
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('homeSection').style.display = 'block';
+      document.getElementById('userName').textContent = `Welcome, ${userData.name}`;
+      document.getElementById('userDetails').textContent = `Admission No: ${userData.admissionNo} | Class: ${userData.class}`;
+      loadPage('dashboard');
+    }
+
+    function loadPage(page) {
+      // Remove active class from all buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Add active class to clicked button
+      event.target.classList.add('active');
+      
+      // Load corresponding page (you'll need to create these pages)
+      const pageUrls = {
+        dashboard: 'dashboard.html',
+        attendance: 'attendance.html',
+        assignments: 'assignments.html',
+        results: 'results.html',
+        profile: 'profile.html'
+      };
+      
+      document.getElementById('contentFrame').src = pageUrls[page] || 'about:blank';
+    }
+
+    function logout() {
+      userData = null;
+      document.getElementById('loginSection').style.display = 'flex';
+      document.getElementById('homeSection').style.display = 'none';
+      document.getElementById('loginForm').reset();
+      document.getElementById('contentFrame').src = 'about:blank';
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base target="_top" />
+  <title>Kamal Kumari Devi Model School</title>
+  <style>
+    /* ===== Global Styles ===== */
+    body {
+      font-family: 'Times New Roman', serif;
+      margin: 0;
+      padding: 0;
+      background-color: #b80707;
+      background-image: url("https://i.ibb.co/bW4MJ44/Building.jpg");
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== Header Section ===== */
+    .header {
+      text-align: center;
+      color: #5a2e24;
+      background: rgba(255, 255, 255, 0.8);
+      margin-top: 20px;
+      padding: 15px 10px;
+      border-radius: 10px;
+      max-width: 800px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    h3, p {
+      margin: 3px 0;
+      font-size: 14px;
+      color: #5a2e24;
+    }
+
+    /* ===== Button Container ===== */
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      margin: 40px 0;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    /* ===== Big Button Style ===== */
+    .big-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s, background-color 0.3s;
+      width: 220px;
+      text-align: center;
+    }
+
+    .big-button:hover {
+      background-color: #45a049;
+      transform: scale(1.05);
+    }
+
+    .big-button img {
+      width: 90px;
+      height: 90px;
+      margin-bottom: 12px;
+    }
+
+    /* ===== Responsive Design ===== */
+    @media screen and (max-width: 768px) {
+      .big-button {
+        width: 45%;
+      }
+      h1 {
+        font-size: 24px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .big-button {
+        width: 80%;
+        font-size: 16px;
+        padding: 15px;
+      }
+
+      .big-button img {
+        width: 70px;
+        height: 70px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      h3, p {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <div class="header">
+    <h1>KAMAL KUMARI DEVI MODEL SCHOOL</h1>
+    <p><em>A Holistic Approach to Child Education</em></p>
+    <h3>Organized by: Dr Haridasnath Memorial Trust</h3>
+    <p>English Medium Co-educational Higher Secondary Public School Affiliated to CBSE, New Delhi</p>
+    <p>School Code: 15649 | Affiliation Number: 2430194</p>
+  </div>
+
+  <!-- ===== Button Section ===== -->
+  <div class="button-container">
+    <a href="admin/home.html" class="big-button">
+      <img src="admin/admin.png" alt="Admin Logo">
+      ADMIN LOGIN
+    </a>
+
+    <a href="teacher/home.html" class="big-button">
+      <img src="teacher/teacher.png" alt="Teacher Logo">
+      TEACHER LOGIN
+    </a>
+
+    <a href="student/home.html" class="big-button">
+      <img src="student/student.png" alt="Student Logo">
+      STUDENT LOGIN
+    </a>
+  </div>
+</body>
+</html>
